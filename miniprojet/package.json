@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/sebastienPoussard/node-websocket/issues"
   },
-  "homepage": "https://github.com/sebastienPoussard/node-websocket#readme"
+  "homepage": "https://github.com/sebastienPoussard/node-websocket#readme",
+  "dependencies": {
+    "nodejs-websocket": "^1.7.2"
+  }
 }
