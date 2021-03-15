@@ -1,0 +1,60 @@
+body {
+    background: white;
+    font-size: 1.25em;
+    font-family: sans-serif;
+  }
+  p {
+    color: #444;
+  }
+  .wrap {
+    background: #eee;
+    padding: 0.5em 1em;
+    border-radius: 1em;
+    max-width: 400px;
+  }
+  #log {
+    color: #444;
+    font-family: sans-serif;
+    overflow: auto;
+    min-height: 6em;
+    font-size: smaller;
+    background: #ddd;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+    clear: both;
+  }
+  label, strong {
+    color: #c00;
+    font-weight: bold;
+  }
+  kbd {
+    font-weight: bold;
+    color: #369;
+  }
+  input, ul, li {
+    font-family: inherit;
+    font-size: inherit;
+  }
+  input[type=text] {
+    width: 50%;
+    margin-left: 1em;
+  }
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+  #readyState {
+    float: right;
+    margin-top: 0;
+  }
+  #readyState span {
+    background: #A9C832;
+    color: #fff;
+    border-radius: 5em;
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    line-height: 1.5em;
+    text-align: center;
+  }

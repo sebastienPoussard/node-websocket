@@ -1,0 +1,22 @@
+{
+  "name": "tp2",
+  "version": "1.0.0",
+  "description": "TP2 STRI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebastienPoussard/node-websocket.git"
+  },
+  "author": "Poussard Sébastien",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/sebastienPoussard/node-websocket/issues"
+  },
+  "homepage": "https://github.com/sebastienPoussard/node-websocket#readme",
+  "dependencies": {
+    "nodejs-websocket": "^1.7.2"
+  }
+}
