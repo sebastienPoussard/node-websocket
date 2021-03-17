@@ -2,7 +2,8 @@
 const express = require("express");
 const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
-
+const bodyParser = require('body-parser')
+ 
 // creation du serveur express 
 const app = express();
 
@@ -31,6 +32,9 @@ app.use(express.urlencoded({ extended: false }));
 // cookie parser module
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 // renvoyer les vues quand on à une requête
 app.get("/", (req, res) => {
@@ -118,10 +122,10 @@ app.get("/login", (req, res) => {
 });
 // POST login
 app.post("/login:pseudo", (req, res) => {
-    const pseudo = req.params.pseudo;
+    const pseudo = req.body.pseudo;
     console.log(pseudo);
-    cookie = res.cookie('pseudo', pseudo, {expire: 360000 + Date.now()});
-    res.render("logindone", {pseudo: cookie});
+    res.cookie('pseudo', pseudo, {expire: 360000 + Date.now()});
+    res.render("logindone", {pseudo: req.body.pseudo});
 });
 
 
