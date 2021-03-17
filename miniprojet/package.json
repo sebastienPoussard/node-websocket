@@ -1,22 +1,18 @@
 {
-  "name": "miniprojet",
+  "name": "TP3",
   "version": "1.0.0",
-  "description": "bibliothèque à palabres miniprojet STRI",
+  "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sebastienPoussard/node-websocket.git"
-  },
-  "author": "Aude Roger, Florian Labeyrie, Sébastien Poussard",
-  "license": "UNLICENSED",
-  "bugs": {
-    "url": "https://github.com/sebastienPoussard/node-websocket/issues"
-  },
-  "homepage": "https://github.com/sebastienPoussard/node-websocket#readme",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "nodejs-websocket": "^1.7.2"
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "sqlite3": "^5.0.2"
   }
 }
