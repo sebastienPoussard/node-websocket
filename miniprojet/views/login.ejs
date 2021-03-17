@@ -1,0 +1,26 @@
+<%- include("_header") -%>
+
+<h1>Identifiez vous</h1>
+
+<form action="/logindone" method="post">
+  <div class="form-horizontal">
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2"></label>
+      <div class="col-sm-10">
+        <div class="form-group row">
+          <label class="col-form-label col-sm-2" for="Titre">Pseudo</label>
+          <div class="col-sm-8">
+            <input autofocus class="form-control" name="pseudo" value="" />
+          </div>
+        </div>
+
+
+        <input type="submit" value="connexion" class="btn btn-default btn-warning" />
+      </div>
+    </div>
+  </div>
+</form>
+
+
+
+<%- include("_footer") -%>

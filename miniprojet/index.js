@@ -28,9 +28,18 @@ app.set("views", __dirname + "/views");
 app.use(express.static(path.join(__dirname, "public")));
 // parametrage du middleware
 app.use(express.urlencoded({ extended: false })); 
+// cookie parser module
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 // renvoyer les vues quand on à une requête
 app.get("/", (req, res) => {
   res.render("index");
+});
+// identification
+app.get("/login/:id", (req, res) => {
+  const id = req.params.pseudo
+  res.render("logindone", {model : id});
 });
 app.get("/about", (req, res) => {
   res.render("about");
@@ -103,3 +112,18 @@ app.post("/delete/:id", (req, res) => {
     res.redirect("/livres");
   });
 });
+// GET login
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+// POST login
+app.post("/login:pseudo", (req, res) => {
+    const pseudo = req.params.pseudo;
+    console.log(pseudo);
+    cookie = res.cookie('pseudo', pseudo, {expire: 360000 + Date.now()});
+    res.render("logindone", {pseudo: cookie});
+});
+
+
+
+
