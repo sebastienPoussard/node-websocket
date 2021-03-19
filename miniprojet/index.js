@@ -5,7 +5,6 @@ const sqlite3 = require("sqlite3").verbose();
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
- 
 // creation du serveur express 
 const app = express();
 
@@ -34,19 +33,10 @@ app.use(express.urlencoded({ extended: false }));
 // cookies et session
 app.use(cookieParser());
 app.use(session({secret: "thesecret"}));
+// body parser for POST
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-
-
-// fonctions 
-function gestionSession(req, res) {
-    if(req.session.page_views){
-        req.session.page_views++;
-        res.send("You visited this page " + req.session.page_views + " times");
-    } else {
-        req.session.page_views = 1;
-    }    
-    //console.log(res);
-}   
 
 
 
@@ -54,28 +44,61 @@ function gestionSession(req, res) {
 
 // racine
 app.get("/", (req, res) => {
-    gestionSession(req, res);
-    res.render("index");
+    if(!req.session.pseudo){
+        res.render("login");
+    } else {
+    var model = {
+        pseudo : req.session.pseudo
+    };
+    res.render("index", {model: model});
+    }
 });
 
 
 // identification
-app.get("/login/:id", (req, res) => {
-  const id = req.params.pseudo
-  res.render("logindone", {model : id});
+app.post("/logindone", (req, res) => {
+    // creer la session à partir
+    req.session.pseudo = req.body.pseudo;
+    var pseudo = req.body.pseudo;
+    console.log(pseudo);
+    res.render("logindone", {model : pseudo});
 });
-app.get("/about", (req, res) => {
 
-});
-//data
-app.get("/data", (req, res) => {
-  const test = {
-    titre: "Test",
-    items: ["un", "deux", "trois"]
-  };
-  res.render("data", { model: test });
+
+
+// preferences
+app.get("/preferences", (req, res) => {
+    if(!req.session.pseudo){
+        res.render("login");
+    } else {
+        var model = {
+            pseudo : req.session.pseudo
+        };
+    res.render("prefs", {model: model});
+    }
+
+//  const test = {
+//    titre: "Test",
+//    items: ["un", "deux", "trois"]
+//  };
+//  res.render("data", { model: test });
 // Livres
 });
+
+//créneaux
+app.get("/creneaux", (req, res) => {
+    if(!req.session.pseudo){
+        res.render("login");
+    } else {
+        var model = {
+            pseudo : req.session.pseudo
+    };
+    res.render("creneaux", {model : model});
+    }
+});
+
+
+// livres
 app.get("/livres", (req, res) => {
   const sql = "SELECT * FROM Livres ORDER BY Titre";
   db.all(sql, [], (err, rows) => {

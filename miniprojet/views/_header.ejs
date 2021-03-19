@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>AppTest</title>
+  <title>SuperAPP</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 
@@ -13,19 +13,30 @@
   <div class="container">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/">AppTest</a>
+      <a class="navbar-brand" href="/">SuperAPP</a>
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/about">A propos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/data">Données</a>
-        </li>
-        <li class="nav-item">
+       <li class="nav-item">
           <a class="nav-link" href="/livres">Livres</a>
         </li>
-        <li>
-          <a class="nav-link" href="/login">Login</a>
-        </li>
+       <li>
+          <a class="nav-link" href="/creneaux">Créneaux</a>
+       </li>
+      <li>
+          <a class="nav-link" href="/preferences">Preferences</a>
+       </li>
+      <li>
+          <a class="nav-link" href="/chat">Chat</a>
+       </li>
+       <li>
+            <a class="nav-link" href="#">
+            <% if(locals.model) { %>
+               <%- utilisateur : %>
+                <%= model.pseudo %>
+            <% } %>
+            </a>
+       </li>
+    
+
+
       </ul>
     </nav>
