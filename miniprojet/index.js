@@ -3,6 +3,8 @@ const express = require("express");
 const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
  
 // creation du serveur express 
 const app = express();
@@ -21,32 +23,49 @@ app.listen(3000, () => {
     console.log("Serveur démarré (http://localhost:3000/) !");
 });
 
-// définition du moteur de vue
+// configuration du serveur 
+// vues
 app.set("view engine", "ejs");
-// indiquer l'emplacement des vues
 app.set("views", __dirname + "/views");
 // emplacement des fichiers statics pour bootstrap
 app.use(express.static(path.join(__dirname, "public")));
 // parametrage du middleware
 app.use(express.urlencoded({ extended: false })); 
-// cookie parser module
-var cookieParser = require('cookie-parser');
+// cookies et session
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-}));
+app.use(session({secret: "thesecret"}));
 
-// renvoyer les vues quand on à une requête
+
+
+// fonctions 
+function gestionSession(req, res) {
+    if(req.session.page_views){
+        req.session.page_views++;
+        res.send("You visited this page " + req.session.page_views + " times");
+    } else {
+        req.session.page_views = 1;
+    }    
+    //console.log(res);
+}   
+
+
+
+// vues 
+
+// racine
 app.get("/", (req, res) => {
-  res.render("index");
+    gestionSession(req, res);
+    res.render("index");
 });
+
+
 // identification
 app.get("/login/:id", (req, res) => {
   const id = req.params.pseudo
   res.render("logindone", {model : id});
 });
 app.get("/about", (req, res) => {
-  res.render("about");
+
 });
 //data
 app.get("/data", (req, res) => {
@@ -116,18 +135,5 @@ app.post("/delete/:id", (req, res) => {
     res.redirect("/livres");
   });
 });
-// GET login
-app.get("/login", (req, res) => {
-  res.render("login");
-});
-// POST login
-app.post("/login:pseudo", (req, res) => {
-    const pseudo = req.body.pseudo;
-    console.log(pseudo);
-    res.cookie('pseudo', pseudo, {expire: 360000 + Date.now()});
-    res.render("logindone", {pseudo: req.body.pseudo});
-});
-
-
 
 
