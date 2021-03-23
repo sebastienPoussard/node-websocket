@@ -2,7 +2,7 @@
 
 <h1>Modifier une fiche</h1>
 
-<form action="/edit/<%= model.Livre_ID %>" method="post">
+<form action="/edit/<%= model.livres[0]['Livre_ID'] %>" method="post">
   <div class="form-horizontal">
 
     <%- include("_editor") -%>
