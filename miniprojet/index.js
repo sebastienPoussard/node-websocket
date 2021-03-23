@@ -127,13 +127,39 @@ app.get("/livres", (req, res) => {
 
 // GET  edit
 app.get("/edit/:id", (req, res) => {
-  const id = req.params.id;
-  const sql = "SELECT * FROM Livres WHERE Livre_ID = ?";
-  db.get(sql, id, (err, row) => {
-    // if (err) ...
-    res.render("edit", { model: row });
-  });
+
+    // variable à passer en parametre à la vue
+    const variables = {
+        livres: null,
+        pseudo: null,
+        id : null,
+    }
+
+    if(!req.session.pseudo){
+        res.render("login");
+    } else {
+        // requête pour avoir les livres
+        const sql = "SELECT * FROM Livres WHERE Livre_ID = ?";
+        db.all(sql, req.params.id, (err, livres) => {
+            if (err) {
+                return console.error(err.message);
+            }
+            variables.livres = livres;
+            // requete pour avoir l'id de l'utilisateur
+            const sql2 = "SELECT personneID FROM Personne where pseudo='"+req.session.pseudo+"'";
+            db.all(sql2, [], (err, pseudo) => {
+                if (err) {
+                    return console.error(err.message);
+                }
+                variables.id = pseudo[0]["personneID"];
+                variables.pseudo = req.session.pseudo;
+                console.log(variables.livres);
+                res.render("edit", { model: variables });
+            });
+        });
+    }
 });
+
 // POST edit
 app.post("/edit/:id", (req, res) => {
   const id = req.params.id;
