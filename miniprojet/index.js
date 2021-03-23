@@ -57,10 +57,27 @@ app.get("/", (req, res) => {
 
 // identification
 app.post("/logindone", (req, res) => {
+    
     // creer la session à partir
     req.session.pseudo = req.body.pseudo;
     var pseudo = req.body.pseudo;
-    console.log(pseudo);
+    // créer l'utilisateur s'il n'existe pas déjà
+    const sql = "SELECT personneID FROM Personne where pseudo='"+pseudo+"'";
+    db.all(sql, [], (err, pseudo) => {
+        if (err) {
+            return console.error(err.message);
+        }
+        if(pseudo.length == 0) {
+            const sql2 = "INSERT INTO Personne (pseudo) VALUES ('"+req.body.pseudo+"')"; 
+
+            console.log(sql2);
+            db.run(sql2, [], err => {
+                if (err) {
+                    return console.error(err.message);
+                }
+            });
+        }
+    });
     res.render("logindone", {model : pseudo});
 });
 
