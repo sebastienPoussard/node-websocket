@@ -1,6 +1,6 @@
 <%- include("_header") -%>
 
-<h1>Liste des livres (<%= model.length %>)</h1>
+<h1>Liste des livres (<%= model.livres.length %>)</h1>
 
 <div class="table-responsive-sm">
   <table class="table table-hover">
@@ -15,14 +15,16 @@
       </tr>
     </thead>
     <tbody>
-      <% for (const book of model) { %>
+      <% for (const book of model.livres) { %>
         <tr>
           <td><%= book.Titre %></td>
           <td><%= book.Auteur %></td>
           <td><%= book.Commentaires %></td>
           <td class="d-print-none">
+            <% if(book.proprietaire == model.id) { %>
             <a class="btn btn-sm btn-warning" href="/edit/<%= book.Livre_ID %>">Modifier</a>
             <a class="btn btn-sm btn-danger" href="/delete/<%= book.Livre_ID %>">Effacer</a>
+            <% } %>
           </td>
         </tr>
       <% } %>

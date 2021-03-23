@@ -100,13 +100,34 @@ app.get("/creneaux", (req, res) => {
 
 // livres
 app.get("/livres", (req, res) => {
+
+  // variable à passer en parametre à la vue
+  const variables = {
+    livres: null,
+    pseudo: null,
+    id : null
+  }
+
+  // requête pour avoir les livres
   const sql = "SELECT * FROM Livres ORDER BY Titre";
-  db.all(sql, [], (err, rows) => {
+  db.all(sql, [], (err, livres) => {
     if (err) {
       return console.error(err.message);
     }
-    res.render("livres", { model: rows });
+    variables.livres = livres;
+    // requete pour avoir l'id de l'utilisateur
+    const sql2 = "SELECT personneID FROM Personne where pseudo='"+req.session.pseudo+"'";
+    db.all(sql2, [], (err, pseudo) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      variables.id = pseudo[0]["personneID"];
+      variables.pseudo = req.session.pseudo;
+      res.render("livres", { model: variables });
+    });
   });
+
+
 });
 // GET  edit
 app.get("/edit/:id", (req, res) => {
