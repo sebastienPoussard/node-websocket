@@ -1,5 +1,29 @@
 <%- include("_header") -%>
 
-<h1>Les préférences</h1>
+<h1>Ajouter un créneau / Livre de disponibilité </h1>
 
+
+<form action="/preferences" method="post">
+    <!-- date -->
+    <label for="date">Choisir une date :</label>
+    <input type="date" id="date" name="date" required>
+    <br>
+    <!-- matin / aprem -->
+    <label for="matin">Matin ou Après-midi ?</label>
+    <select required name="matin" id="matin">
+        <option value="matin">Matin</option>
+        <option value="aprem">Après-midi</option>
+    </select>
+    <br>
+    <!-- livres -->
+    <label for="livre">Quel livres souhaitez vous disucter ?</label>
+    <select name="livre" id="livre">
+        <% for (const book of model.livres) { %>
+        <option value="<%= book["Livre_ID"] %>"><%= book["Titre"] %></option>
+        <% } %>
+    </select>
+    <input type="hidden" name="idUser" value="<%= model.id %>">
+    <br>
+    <input type="submit" value="inscription" class="btn btn-default btn-warning">
+</form>
 <%- include("_footer") -%>

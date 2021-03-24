@@ -69,8 +69,6 @@ app.post("/logindone", (req, res) => {
         }
         if(pseudo.length == 0) {
             const sql2 = "INSERT INTO Personne (pseudo) VALUES ('"+req.body.pseudo+"')"; 
-
-            console.log(sql2);
             db.run(sql2, [], err => {
                 if (err) {
                     return console.error(err.message);
@@ -85,13 +83,35 @@ app.post("/logindone", (req, res) => {
 
 // preferences
 app.get("/preferences", (req, res) => {
+
+    // variable à passer en parametre à la vue
+    const variables = {
+        livres: null,
+        pseudo: null,
+        id : null
+    }
+
     if(!req.session.pseudo){
         res.render("login");
     } else {
-        var model = {
-            pseudo : req.session.pseudo
-        };
-    res.render("prefs", {model: model});
+        // requête pour avoir les livres
+        const sql = "SELECT * FROM Livres ORDER BY Titre";
+        db.all(sql, [], (err, livres) => {
+            if (err) {
+                return console.error(err.message);
+            }
+            variables.livres = livres;
+            // requete pour avoir l'id de l'utilisateur
+            const sql2 = "SELECT personneID FROM Personne where pseudo='"+req.session.pseudo+"'";
+            db.all(sql2, [], (err, pseudo) => {
+            if (err) {
+                return console.error(err.message);
+            }
+            variables.id = pseudo[0]["personneID"];
+            variables.pseudo = req.session.pseudo;
+            res.render("prefs", { model: variables });
+            });
+        });
     }
 });
 
