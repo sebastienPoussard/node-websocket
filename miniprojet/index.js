@@ -115,6 +115,16 @@ app.get("/preferences", (req, res) => {
     }
 });
 
+
+app.post("/preferences", (req, res) => {
+    date = req.body.date;
+    estMatin = req.body.matin;
+    livreid = req.body.livre;
+    userid = req.body.idUser;
+
+    console.log(date, estMatin, livreid, userid);
+});
+
 //créneaux
 app.get("/creneaux", (req, res) => {
     if(!req.session.pseudo){
