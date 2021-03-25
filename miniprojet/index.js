@@ -117,12 +117,44 @@ app.get("/preferences", (req, res) => {
 
 
 app.post("/preferences", (req, res) => {
+    // choper les parametres
     date = req.body.date;
     estMatin = req.body.matin;
     livreid = req.body.livre;
     userid = req.body.idUser;
-
-    console.log(date, estMatin, livreid, userid);
+    // verifier que le creneau existe pas déjà, sinon le créer
+    const sql = "SELECT idcreneau FROM Crenaux WHERE Date='"+date+"' AND EstLeMatin='"+estMatin+"' AND livre='"+livreid+"'"
+    db.all(sql, [], (err, idcreneau) => {
+        if (err) {
+            return console.error(err.message);
+        }
+        if(idcreneau.length == 0) {
+            const sql2 = "INSERT INTO Crenaux ('Date', 'EstLeMatin', 'livre') VALUES ('"+date+"', '"+estMatin+"', '"+livreid+"')";
+            console.log("insertion dans la BDD "+sql2);
+            db.all(sql2, [], (err, none) => {
+                if (err) {
+                    return console.error(err.message);
+                }
+            });
+        }
+        // re récuperer l'id du créneau puisqu'on est pas sur de l'avoir s'il vient d'être créer
+        const sql3 = "SELECT idcreneau FROM Crenaux WHERE Date='"+date+"' AND EstLeMatin='"+estMatin+"' AND livre='"+livreid+"'"
+        db.all(sql3, [], (err, idcreneau) => {
+            if (err) {
+                return console.error(err.message);
+            }
+            // ajouter l'inscription
+            creneauID = idcreneau[0]["idcreneau"];
+            const sql4 = "INSERT INTO Participe ('PersonneID', 'CreneauID') VALUES ('"+userid+"', '"+creneauID+"')";
+            console.log("insertion de participation "+ sql4);
+            db.all(sql4, [], (err, insc) => {
+                if (err) {
+                    return console.error(err.message);
+                }
+            res.render("creneauxDone");
+            });
+        });
+    });
 });
 
 //créneaux
