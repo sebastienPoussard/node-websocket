@@ -5,7 +5,7 @@ const sqlite3 = require("sqlite3").verbose();
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-// creation du serveur express 
+// creation du serveur express
 const app = express();
 
 // connexion à la BDD
@@ -22,14 +22,14 @@ app.listen(3000, () => {
     console.log("Serveur démarré (http://localhost:3000/) !");
 });
 
-// configuration du serveur 
+// configuration du serveur
 // vues
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 // emplacement des fichiers statics pour bootstrap
 app.use(express.static(path.join(__dirname, "public")));
 // parametrage du middleware
-app.use(express.urlencoded({ extended: false })); 
+app.use(express.urlencoded({ extended: false }));
 // cookies et session
 app.use(cookieParser());
 app.use(session({secret: "thesecret"}));
@@ -40,7 +40,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 
 
-// vues 
+// vues
 
 // racine
 app.get("/", (req, res) => {
@@ -57,7 +57,7 @@ app.get("/", (req, res) => {
 
 // identification
 app.post("/logindone", (req, res) => {
-    
+
     // creer la session à partir
     req.session.pseudo = req.body.pseudo;
     var pseudo = req.body.pseudo;
@@ -68,7 +68,7 @@ app.post("/logindone", (req, res) => {
             return console.error(err.message);
         }
         if(pseudo.length == 0) {
-            const sql2 = "INSERT INTO Personne (pseudo) VALUES ('"+req.body.pseudo+"')"; 
+            const sql2 = "INSERT INTO Personne (pseudo) VALUES ('"+req.body.pseudo+"')";
             db.run(sql2, [], err => {
                 if (err) {
                     return console.error(err.message);
@@ -127,14 +127,23 @@ app.post("/preferences", (req, res) => {
 
 //créneaux
 app.get("/creneaux", (req, res) => {
-    if(!req.session.pseudo){
-        res.render("login");
-    } else {
-        var model = {
-            pseudo : req.session.pseudo
-    };
-    res.render("creneaux", {model : model});
-    }
+
+
+    const sqlcre = "select Date, EstLeMatin as Matin,count(*) as Participants, titre from Crenaux, Livres, Participe where Crenaux.livre = Livres.Livre_ID and Crenaux.idcreneau = Participe.CreneauID group by Crenaux.idcreneau ";
+    db.all(sqlcre, [], (err, creneaux) => {
+        if (err) {
+            return console.error(err.message);
+        }
+        if(!req.session.pseudo){
+            res.render("login");
+        } else {
+            var model = {
+                pseudo : req.session.pseudo,
+                creneaux : creneaux
+        };
+        res.render("creneaux", {model : model});
+        }
+    });
 });
 
 
@@ -248,5 +257,3 @@ app.post("/delete/:id", (req, res) => {
     res.redirect("/livres");
   });
 });
-
-
