@@ -289,3 +289,27 @@ app.post("/delete/:id", (req, res) => {
     res.redirect("/livres");
   });
 });
+
+
+var ws = require("nodejs-websocket");
+
+var server = ws.createServer(function(conn) {
+
+    console.log("Nouvelle connexion");
+
+    // Réception d'un message texte
+    conn.on("text", function(msg) {
+
+    });
+
+    // Fermeture de connexion
+    conn.on("close", function(code, reason) {
+        console.log("Connexion fermée");
+    });
+
+    // En cas d'erreur
+    conn.on("error", function(err) {
+      console.log(err);
+    });
+
+}).listen(2222); // On écoute sur le port 2222
