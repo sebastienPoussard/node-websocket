@@ -2,6 +2,7 @@
 
 <h1>Créneaux</h1>
 
+<!--
 <div class="table-responsive-sm">
   <table class="table table-hover">
     <thead>
@@ -13,23 +14,24 @@
       </tr>
     </thead>
     <tbody>
-      <% for (const book of model.creneaux) { %>
+      %  for (const book of model.creneaux) { %>
         <tr>
-          <td><%= book.Date %></td>
-          <td><%= book.Matin %></td>
-          <td><%= book.Participants %></td>
-          <td><%= book.Titre %></td>
+          <td>%= book.Date %></td>
+          <td>%= book.Matin %></td>
+          <td>%= book.Participants %></td>
+          <td>%= book.Titre %></td>
         </tr>
-      <% } %>
+      % } %>
     </tbody>
   </table>
 </div>
-
+-->
+<div id="creneaux"></div>
 <script>
 
 // Fonction d'ajout au journal
 function log(txt) {
-  document.getElementById('log').innerHTML += txt + "<br>";
+  document.getElementById('creneaux').innerHTML += txt + "<br>";
 }
 if('WebSocket' in window) {
 
@@ -37,16 +39,17 @@ if('WebSocket' in window) {
 
   log("Tentative de connexion...");
   // Indication de l'état
-  var rs = document.getElementById('rs');
   // Lors de l'ouverture de connexion
   ws.onopen = function() {
-    log("Socket ouvert");
-    rs.innerHTML = this.readyState;
+    // envoyer l'id
+    log("connecté !");
+    ws.send("<%= model %>");
   };
+   
   // Lors de la réception d'un message
   ws.onmessage = function(e) {
     // Ajout au journal du contenu du message
-    log("< " + e.data);
+    log(e.data);
     rs.innerHTML = this.readyState;
   };
   // Lors d'une erreur de connexion

@@ -169,12 +169,14 @@ app.get("/creneaux", (req, res) => {
         if(!req.session.pseudo){
             res.render("login");
         } else {
-            var model = {
-                pseudo : req.session.pseudo,
-                creneaux : creneaux
+            const sql = "SELECT personneID FROM Personne WHERE pseudo='"+req.session.pseudo+"'";
+            db.all(sql, [], (err, id) => {
+                id = id[0]["personneID"];
+                console.log(id);
+                res.render("creneaux", {model : id});
+            });
         };
-        res.render("creneaux", {model : model});
-        }
+          
     });
 });
 
@@ -292,24 +294,86 @@ app.post("/delete/:id", (req, res) => {
 
 
 var ws = require("nodejs-websocket");
+var s = "Serveur websocket ==> ";
 
 var server = ws.createServer(function(conn) {
 
-    console.log("Nouvelle connexion");
+    console.log(s+"Nouvelle connexion");
+    // récupérer l'id de l'utilisateur
+
+
+    // récuperer la liste des permanences
+
 
     // Réception d'un message texte
     conn.on("text", function(msg) {
+        console.log(s+msg);
+        const sql = "select Date, EstLeMatin as Matin,count(*) as Participants, titre from Crenaux, Livres, Participe where Crenaux.livre = Livres.Livre_ID and Crenaux.idcreneau = Participe.CreneauID  and Crenaux.idcreneau  in (select CreneauID from Participe where Participe.PersonneID = "+msg+")group by Crenaux.idcreneau having Participants > 2"; 
+        db.get(sql, [], (err, resultat) => {
+            if (err) {
+                return console.error(err.message);
+            }
+            //obj = JSON.stringify(resultat);
+            if (resultat.length > 1) {
+                var renvoie = '<div class="table-responsive-sm">'+
+                                '<table class="table table-hover">'+
+                                    '<thead>'+
+                                      '<tr>'+
+                                        '<th>Date</th>'+
+                                        '<th>Matin</th>'+
+                                        '<th>Participants</th>'+
+                                        '<th>Livre</th>'+
+                                      '</tr>'+
+                                    '</thead>'+
+                                    '<tbody>';
+                for (const cren of resultat) {
+                    renvoie = renvoie +'<tr>'+
+                                          '<td>'+cren["Date"]+'</td>'+
+                                          '<td>'+cren["Matin"]+'</td>'+
+                                          '<td>'+cren["Participants"]+'</td>'+
+                                          '<td>'+cren["Titre"]+'</td>'+
+                                        '</tr>';
+                }
+                renvoie = renvoie +  '</tbody>'+
+                                  '</table>'+
+                                '</div>'; 
 
+            conn.send(renvoie);
+            } else {
+                renvoie = '<div class="table-responsive-sm">'+
+                            '<table class="table table-hover">'+
+                                '<thead>'+
+                                  '<tr>'+
+                                    '<th>Date</th>'+
+                                    '<th>Matin</th>'+
+                                    '<th>Participants</th>'+
+                                    '<th>Livre</th>'+
+                                  '</tr>'+
+                                '</thead>'+
+                                '<tbody>'+
+                                   '<tr>'+
+                                      '<td>'+resultat["Date"]+'</td>'+
+                                      '<td>'+resultat["Matin"]+'</td>'+
+                                      '<td>'+resultat["Participants"]+'</td>'+
+                                      '<td>'+resultat["Titre"]+'</td>'+
+                                    '</tr>'+
+                                '</tbody>'+
+                              '</table>'+
+                            '</div>';
+            conn.send(renvoie);
+            }
+            
+        });      
     });
 
     // Fermeture de connexion
     conn.on("close", function(code, reason) {
-        console.log("Connexion fermée");
+        console.log(s+"Connexion fermée");
     });
 
     // En cas d'erreur
     conn.on("error", function(err) {
-      console.log(err);
+      console.log(s+err);
     });
 
 }).listen(2222); // On écoute sur le port 2222
